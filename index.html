@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VoltCart — Electronics Store</title>
+<style>
+:root{
+  --bg:#0a0f1e;
+  --panel:#0f1729;
+  --card:#131e35;
+  --border:#1e3a5f;
+  --accent:#00c2ff;
+  --accent2:#7c3aed;
+  --green:#00e676;
+  --red:#ff5252;
+  --amber:#ffab40;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --heading-font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--heading-font);background:var(--bg);color:var(--text);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit}
+
+/* ── ANNOUNCEMENT BAR ── */
+.announce{background:linear-gradient(90deg,#0a1628,#0d2347,#0a1628);border-bottom:1px solid var(--border);padding:9px 24px;display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:#94a3b8}
+.announce span{display:flex;align-items:center;gap:8px}
+.announce .ask-btn{background:var(--accent);color:#000;border:none;border-radius:999px;padding:4px 14px;font-size:.75rem;font-weight:700;letter-spacing:.04em}
+.announce .ask-btn:hover{background:#38d9ff}
+
+/* ── NAVBAR ── */
+nav{position:sticky;top:0;z-index:200;background:rgba(10,15,30,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:20px;height:64px}
+.logo{font-size:1.6rem;font-weight:900;letter-spacing:-.04em;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.logo-badge{background:var(--accent);color:#000;font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:4px;margin-left:6px;-webkit-text-fill-color:#000}
+.nav-links{display:flex;gap:18px;font-size:.86rem;color:var(--muted);flex:1}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--accent)}
+.nav-search{flex:1;max-width:280px;background:#0d1f3c;border:1px solid var(--border);border-radius:999px;display:flex;align-items:center;padding:0 14px;gap:8px}
+.nav-search input{background:transparent;border:none;outline:none;color:var(--text);font-size:.84rem;width:100%;padding:9px 0}
+.nav-search input::placeholder{color:var(--muted)}
+.nav-icons{display:flex;gap:12px;align-items:center}
+.nav-icons .icon-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--muted);font-size:1rem;position:relative}
+.icon-btn .badge{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;width:16px;height:16px;border-radius:50%;font-size:.6rem;display:grid;place-items:center;font-weight:700}
+
+/* ── HERO ── */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:60px 48px;align-items:center;background:radial-gradient(ellipse at top left,rgba(0,194,255,.08),transparent 60%),radial-gradient(ellipse at bottom right,rgba(124,58,237,.07),transparent 60%)}
+.hero-pill{background:rgba(0,194,255,.1);border:1px solid rgba(0,194,255,.3);color:var(--accent);font-size:.72rem;font-weight:700;letter-spacing:.1em;padding:5px 14px;border-radius:999px;display:inline-block;margin-bottom:18px}
+.hero h1{font-size:3.2rem;font-weight:900;line-height:1.08;margin-bottom:16px;letter-spacing:-.04em}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);line-height:1.65;margin-bottom:28px;font-size:.96rem;max-width:440px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{background:var(--accent);color:#000;border:none;border-radius:999px;padding:13px 28px;font-weight:800;font-size:.9rem;letter-spacing:.04em}
+.btn-primary:hover{background:#38d9ff}
+.btn-outline{background:transparent;color:var(--text);border:2px solid var(--border);border-radius:999px;padding:11px 24px;font-weight:700;font-size:.9rem}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.hero-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px;text-align:center;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(0,194,255,.18),transparent);border-radius:50%}
+.hero-prod-emoji{font-size:7rem;display:block;margin-bottom:12px;filter:drop-shadow(0 0 24px rgba(0,194,255,.4))}
+.hero-prod-name{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.hero-prod-price{color:var(--accent);font-size:1.4rem;font-weight:900}
+.hero-prod-mrp{color:var(--muted);text-decoration:line-through;font-size:.85rem;margin-left:8px}
+.hero-prod-badge{display:inline-block;background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3);border-radius:999px;padding:3px 10px;font-size:.72rem;font-weight:700;margin-top:8px}
+.social-proof{display:flex;align-items:center;gap:10px;margin-top:28px;font-size:.82rem;color:var(--muted)}
+.stars{color:var(--amber)}
+
+/* ── MARQUEE ── */
+.marquee-wrap{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;overflow:hidden}
+.marquee{display:flex;gap:0;animation:scroll 22s linear infinite;white-space:nowrap}
+.marquee span{font-size:.8rem;color:var(--muted);letter-spacing:.06em;padding:0 32px}
+.marquee span b{color:var(--accent)}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION TITLES ── */
+.section{padding:60px 48px}
+.section-title{font-size:1.8rem;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}
+.section-sub{color:var(--muted);font-size:.88rem;margin-bottom:36px}
+
+/* ── PRODUCT GRID ── */
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.prod-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:.2s;position:relative;overflow:hidden}
+.prod-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.prod-tag{position:absolute;top:12px;left:12px;background:var(--accent);color:#000;font-size:.65rem;font-weight:800;padding:3px 9px;border-radius:999px;letter-spacing:.05em}
+.prod-tag.hot{background:var(--red);color:#fff}
+.prod-tag.sale{background:var(--amber);color:#000}
+.prod-emoji{font-size:4rem;text-align:center;display:block;margin:14px 0 10px;filter:drop-shadow(0 0 12px rgba(0,194,255,.25))}
+.prod-name{font-weight:700;font-size:.95rem;margin-bottom:4px}
+.prod-spec{color:var(--muted);font-size:.78rem;margin-bottom:10px}
+.prod-rating{color:var(--amber);font-size:.78rem;margin-bottom:10px}
+.prod-price-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.prod-price{color:var(--accent);font-size:1.1rem;font-weight:900}
+.prod-mrp{color:var(--muted);text-decoration:line-through;font-size:.8rem}
+.add-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:700}
+.add-btn:hover{background:#38d9ff}
+
+/* ── CATEGORIES ── */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s}
+.cat-card:hover{border-color:var(--accent);background:#0d1f3c}
+.cat-emoji{font-size:2.4rem;display:block;margin-bottom:8px}
+.cat-name{font-size:.82rem;font-weight:600;color:var(--muted)}
+
+/* ── POLICY STRIP ── */
+.policy-strip{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:28px 48px;gap:20px}
+.policy-item{display:flex;align-items:center;gap:14px}
+.policy-icon{font-size:1.8rem}
+.policy-title{font-weight:700;font-size:.88rem}
+.policy-desc{color:var(--muted);font-size:.75rem}
+
+/* ── FOOTER ── */
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer-brand .logo{font-size:1.4rem}
+.footer-brand p{color:var(--muted);font-size:.82rem;margin-top:12px;line-height:1.6;max-width:260px}
+footer h4{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:14px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+footer ul li a{color:var(--muted);font-size:.82rem}
+footer ul li a:hover{color:var(--text)}
+.footer-bottom{background:#060b16;border-top:1px solid var(--border);padding:16px 48px;display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted)}
+
+/* ══════════════════════════════════
+   CHAT WIDGET
+══════════════════════════════════ */
+#chat-fab{position:fixed;bottom:28px;right:28px;z-index:9999;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:999px;padding:14px 22px;font-size:.9rem;font-weight:800;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,194,255,.35);transition:.2s}
+#chat-fab:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,194,255,.45)}
+#chat-fab .dot{width:9px;height:9px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+#chat-widget{position:fixed;bottom:98px;right:28px;z-index:9998;width:380px;max-height:600px;background:var(--panel);border:1px solid var(--border);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.6);display:flex;flex-direction:column;overflow:hidden;transition:.25s;transform-origin:bottom right}
+#chat-widget.hidden{opacity:0;transform:scale(.92) translateY(10px);pointer-events:none}
+
+.cw-header{background:linear-gradient(135deg,#0d2347,#1a0a3d);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.cw-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:1.3rem;flex-shrink:0}
+.cw-title{font-weight:800;font-size:.95rem}
+.cw-sub{font-size:.72rem;color:#94a3b8;margin-top:2px}
+.cw-close{margin-left:auto;background:transparent;border:none;color:#94a3b8;font-size:1.3rem;line-height:1;padding:4px}
+.cw-close:hover{color:#fff}
+
+.cw-tabs{display:flex;border-bottom:1px solid var(--border);background:#0a0f1e}
+.cw-tab{flex:1;background:transparent;border:none;color:var(--muted);padding:11px 8px;font-size:.78rem;font-weight:600;border-bottom:2px solid transparent;transition:.15s}
+.cw-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.cw-panel{display:none;flex-direction:column;flex:1;overflow:hidden}
+.cw-panel.active{display:flex}
+
+/* Chat panel */
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-track{background:transparent}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+.msg-bot,.msg-user{max-width:88%;font-size:.84rem;line-height:1.5;padding:10px 14px;border-radius:14px;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg-bot{background:#111f38;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.msg-user{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.bot-row{display:flex;align-items:flex-start;gap:8px}
+.bot-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:.8rem;flex-shrink:0;margin-top:2px}
+.msg-bot strong{color:var(--accent)}
+.msg-bot em{color:var(--amber)}
+.msg-time{font-size:.65rem;color:var(--muted);margin-top:4px;text-align:right}
+.msg-bot ul{padding-left:16px;margin-top:4px}
+.msg-bot li{margin-bottom:3px}
+
+.chips-wrap{padding:10px 12px;display:flex;gap:7px;overflow-x:auto;border-top:1px solid var(--border);flex-shrink:0}
+.chips-wrap::-webkit-scrollbar{height:3px}
+.chips-wrap::-webkit-scrollbar-thumb{background:var(--border)}
+.chip-q{background:#111f38;border:1px solid var(--border);color:var(--text);border-radius:999px;padding:5px 11px;font-size:.72rem;white-space:nowrap;flex-shrink:0}
+.chip-q:hover{border-color:var(--accent);color:var(--accent)}
+
+.cw-composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0}
+.cw-composer input{flex:1;background:#0a0f1e;border:1px solid var(--border);border-radius:999px;padding:10px 16px;color:var(--text);font-size:.84rem;outline:none}
+.cw-composer input:focus{border-color:var(--accent)}
+.cw-composer button{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:50%;width:40px;height:40px;color:#fff;font-size:1.1rem;display:grid;place-items:center;flex-shrink:0}
+
+/* Warranty panel */
+.warranty-panel{padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.warranty-panel h3{font-size:.9rem;font-weight:800;color:var(--accent);margin-bottom:4px}
+.wfield label{font-size:.76rem;color:var(--muted);display:block;margin-bottom:5px}
+.wfield input,.wfield select{width:100%;background:#0a0f1e;border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:.84rem;outline:none}
+.wfield input:focus,.wfield select:focus{border-color:var(--accent)}
+.calc-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;padding:11px;width:100%;font-weight:800;color:#fff;font-size:.86rem;margin-top:4px}
+#warranty-result{background:#111f38;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:.82rem;line-height:1.6;display:none}
+#warranty-result.show{display:block}
+
+/* Unboxing panel */
+.unbox-panel{padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.unbox-panel h3{font-size:.9rem;font-weight:800;color:var(--accent)}
+.unbox-warning{background:rgba(255,171,64,.08);border:1px solid rgba(255,171,64,.3);border-radius:10px;padding:12px;font-size:.82rem;line-height:1.6;color:var(--amber)}
+.unbox-steps{list-style:none;display:flex;flex-direction:column;gap:8px}
+.unbox-steps li{background:#111f38;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.8rem;display:flex;gap:10px;align-items:flex-start}
+.step-num{background:var(--accent);color:#000;font-weight:900;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce">
+  <span>⚡ FREE Delivery on orders above ₹499 &nbsp;•&nbsp; 🛡️ 1-Year Warranty on All Products &nbsp;•&nbsp; 📍 New Delhi, India</span>
+  <button class="ask-btn" onclick="toggleChat()">💬 Ask AI Support</button>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div style="display:flex;align-items:center;gap:0">
+    <span class="logo">VoltCart</span>
+    <span class="logo-badge">DELHI</span>
+  </div>
+  <div class="nav-links" style="margin-left:28px">
+    <a href="#" class="active">Home</a>
+    <a href="#products">Products</a>
+    <a href="#categories">Categories</a>
+    <a href="#deals">Deals</a>
+    <a href="#" onclick="openPolicies()">Policies</a>
+  </div>
+  <div class="nav-search">
+    <span style="color:var(--muted)">🔍</span>
+    <input type="text" placeholder="Search iPhone, Laptop, Earbuds..."/>
+  </div>
+  <div class="nav-icons">
+    <button class="icon-btn" title="Wishlist">♡</button>
+    <button class="icon-btn" title="Cart">🛒<span class="badge">3</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <span class="hero-pill">🏆 INDIA'S TRUSTED ELECTRONICS STORE</span>
+    <h1>TECH FOR<br/><span>EVERY LIFE</span></h1>
+    <p>Top-quality smartphones, laptops, earbuds, smartwatches & home appliances — delivered fast to your door. 100% genuine products with warranty.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">🛒 SHOP NOW</button>
+      <button class="btn-outline" onclick="toggleChat()">🤖 ASK VOLTBOT AI</button>
+    </div>
+    <div class="social-proof">
+      <span class="stars">★★★★★</span>
+      <span>4.8/5 from <strong>12,400+</strong> verified buyers</span>
+    </div>
+  </div>
+  <div class="hero-card">
+    <span class="hero-prod-emoji">📱</span>
+    <div class="hero-prod-name">iPhone 16 Pro Max — 256GB</div>
+    <div>
+      <span class="hero-prod-price">₹1,34,900</span>
+      <span class="hero-prod-mrp">₹1,59,900</span>
+    </div>
+    <div class="hero-prod-badge">🔥 15% OFF — Limited Stock</div>
+    <button class="btn-primary" style="margin-top:16px;width:100%">Add to Cart</button>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>⚡ <b>FREE SHIPPING</b> ABOVE ₹499</span>
+    <span>🛡️ <b>1-YEAR WARRANTY</b> GUARANTEED</span>
+    <span>🔄 <b>7-DAY EASY RETURNS</b></span>
+    <span>📦 <b>SAME DAY DISPATCH</b> IN DELHI</span>
+    <span>💳 <b>NO-COST EMI</b> AVAILABLE</span>
+    <span>✅ <b>100% GENUINE PRODUCTS</b></span>
+    <span>⚡ <b>FREE SHIPPING</b> ABOVE ₹499</span>
+    <span>🛡️ <b>1-YEAR WARRANTY</b> GUARANTEED</span>
+    <span>🔄 <b>7-DAY EASY RETURNS</b></span>
+    <span>📦 <b>SAME DAY DISPATCH</b> IN DELHI</span>
+    <span>💳 <b>NO-COST EMI</b> AVAILABLE</span>
+    <span>✅ <b>100% GENUINE PRODUCTS</b></span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-title">🔥 Best Sellers</div>
+  <div class="section-sub">Top picks from our Electronics collection — Genuine • Warranted • Fast Delivery</div>
+  <div class="product-grid">
+
+    <div class="prod-card">
+      <span class="prod-tag hot">BEST SELLER</span>
+      <span class="prod-emoji">📱</span>
+      <div class="prod-name">Samsung Galaxy S25 Ultra</div>
+      <div class="prod-spec">12GB RAM • 512GB • 5G • Titanium</div>
+      <div class="prod-rating">★★★★★ (2,840)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹1,24,999</span><br/><span class="prod-mrp">₹1,49,999</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag sale">20% OFF</span>
+      <span class="prod-emoji">💻</span>
+      <div class="prod-name">MacBook Air M3 — 15"</div>
+      <div class="prod-spec">16GB RAM • 512GB SSD • Retina Display</div>
+      <div class="prod-rating">★★★★★ (1,560)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹1,09,900</span><br/><span class="prod-mrp">₹1,34,900</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag">NEW</span>
+      <span class="prod-emoji">🎧</span>
+      <div class="prod-name">Sony WH-1000XM6</div>
+      <div class="prod-spec">ANC • 30hr Battery • Bluetooth 5.3</div>
+      <div class="prod-rating">★★★★☆ (3,210)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹24,990</span><br/><span class="prod-mrp">₹34,990</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag hot">TOP RATED</span>
+      <span class="prod-emoji">⌚</span>
+      <div class="prod-name">Apple Watch Series 10</div>
+      <div class="prod-spec">45mm • GPS + LTE • Health Sensors</div>
+      <div class="prod-rating">★★★★★ (980)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹41,900</span><br/><span class="prod-mrp">₹49,900</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag sale">SALE</span>
+      <span class="prod-emoji">📺</span>
+      <div class="prod-name">LG OLED 65" 4K TV</div>
+      <div class="prod-spec">120Hz • WebOS • Dolby Atmos</div>
+      <div class="prod-rating">★★★★★ (740)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹89,990</span><br/><span class="prod-mrp">₹1,29,990</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag">POPULAR</span>
+      <span class="prod-emoji">🖨️</span>
+      <div class="prod-name">Canon PIXMA G3770</div>
+      <div class="prod-spec">Wi-Fi • Ink Tank • Print/Scan/Copy</div>
+      <div class="prod-rating">★★★★☆ (620)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹10,499</span><br/><span class="prod-mrp">₹13,999</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag hot">TRENDING</span>
+      <span class="prod-emoji">🎮</span>
+      <div class="prod-name">PS5 Slim + 2 Games</div>
+      <div class="prod-spec">4K 120fps • SSD 1TB • DualSense</div>
+      <div class="prod-rating">★★★★★ (1,870)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹47,990</span><br/><span class="prod-mrp">₹59,990</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+    <div class="prod-card">
+      <span class="prod-tag">BUDGET PICK</span>
+      <span class="prod-emoji">🔌</span>
+      <div class="prod-name">Anker 65W GaN Charger</div>
+      <div class="prod-spec">USB-C • 3 Ports • Universal</div>
+      <div class="prod-rating">★★★★☆ (4,100)</div>
+      <div class="prod-price-row">
+        <div><span class="prod-price">₹2,999</span><br/><span class="prod-mrp">₹4,499</span></div>
+        <button class="add-btn">+ Cart</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories" style="padding-top:0">
+  <div class="section-title">📦 Shop by Category</div>
+  <div class="section-sub">Find exactly what you need</div>
+  <div class="cat-grid">
+    <div class="cat-card"><span class="cat-emoji">📱</span><span class="cat-name">Smartphones</span></div>
+    <div class="cat-card"><span class="cat-emoji">💻</span><span class="cat-name">Laptops</span></div>
+    <div class="cat-card"><span class="cat-emoji">🎧</span><span class="cat-name">Audio</span></div>
+    <div class="cat-card"><span class="cat-emoji">⌚</span><span class="cat-name">Wearables</span></div>
+    <div class="cat-card"><span class="cat-emoji">📺</span><span class="cat-name">TVs & Displays</span></div>
+  </div>
+</section>
+
+<!-- POLICY STRIP -->
+<div class="policy-strip">
+  <div class="policy-item"><span class="policy-icon">🚀</span><div><div class="policy-title">Same Day Dispatch</div><div class="policy-desc">Orders before 2 PM ship today</div></div></div>
+  <div class="policy-item"><span class="policy-icon">🛡️</span><div><div class="policy-title">1-Year Warranty</div><div class="policy-desc">On all products — brand guarantee</div></div></div>
+  <div class="policy-item"><span class="policy-icon">🔄</span><div><div class="policy-title">7-Day Easy Returns</div><div class="policy-desc">Hassle-free, no questions asked</div></div></div>
+  <div class="policy-item"><span class="policy-icon">💳</span><div><div class="policy-title">No-Cost EMI</div><div class="policy-desc">0% interest on 3, 6, 12 months</div></div></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <span class="logo">VoltCart</span>
+    <p>India's most trusted electronics store. Genuine products, fast delivery, and unmatched after-sales support. Located in New Delhi.</p>
+    <p style="margin-top:12px;color:var(--muted);font-size:.78rem">📧 support@voltcart.in &nbsp;|&nbsp; 📞 +91-9811-VOLT-99<br/>📍 Lajpat Nagar, New Delhi - 110024</p>
+  </div>
+  <div>
+    <h4>Products</h4>
+    <ul><li><a href="#">Smartphones</a></li><li><a href="#">Laptops</a></li><li><a href="#">Audio Devices</a></li><li><a href="#">Wearables</a></li><li><a href="#">Gaming</a></li></ul>
+  </div>
+  <div>
+    <h4>Customer Care</h4>
+    <ul><li><a href="#">Track My Order</a></li><li><a href="#">Return & Refund</a></li><li><a href="#">Warranty Claim</a></li><li><a href="#">EMI Options</a></li><li><a href="#">Contact Us</a></li></ul>
+  </div>
+  <div>
+    <h4>Policies</h4>
+    <ul><li><a href="#">Shipping Policy</a></li><li><a href="#">Return Policy</a></li><li><a href="#">Warranty Policy</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 VoltCart Electronics Pvt. Ltd. — New Delhi, India</span>
+  <span>Built with ❤️ for BTECH CSE Activity — Group: Arham, Nikhil M, Nikhil G, Nikhil Y, Vicky</span>
+</div>
+
+<!-- ══════════════════════════════════
+     CHAT WIDGET
+══════════════════════════════════ -->
+<button id="chat-fab" onclick="toggleChat()">
+  <span class="dot"></span> 💬 Ask VoltBot AI
+</button>
+
+<div id="chat-widget" class="hidden">
+
+  <!-- Header -->
+  <div class="cw-header">
+    <div class="cw-avatar">🤖</div>
+    <div>
+      <div class="cw-title">VoltBot — Support AI</div>
+      <div class="cw-sub">🟢 Online • Trained on 15 Support Intents & Policies</div>
+    </div>
+    <button class="cw-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="cw-tabs">
+    <button class="cw-tab active" onclick="switchTab('chat',this)">💬 FAQ Chat</button>
+    <button class="cw-tab" onclick="switchTab('warranty',this)">🛡️ Warranty Check</button>
+    <button class="cw-tab" onclick="switchTab('unbox',this)">📦 Unboxing Rules</button>
+  </div>
+
+  <!-- PANEL 1: Chat -->
+  <div class="cw-panel active" id="panel-chat" style="flex:1;min-height:0;display:flex;flex-direction:column">
+    <div class="chat-msgs" id="chat-msgs"></div>
+
+    <!-- Quick chips -->
+    <div class="chips-wrap" id="chips-wrap"></div>
+
+    <!-- Composer -->
+    <div class="cw-composer">
+      <input id="chat-input" type="text" placeholder="Ask about orders, returns, warranty..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+      <button onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+
+  <!-- PANEL 2: Warranty Check -->
+  <div class="cw-panel" id="panel-warranty">
+    <div class="warranty-panel">
+      <h3>🛡️ Warranty & Return Eligibility Check</h3>
+      <div class="wfield">
+        <label>Order ID</label>
+        <input id="w-orderid" type="text" placeholder="e.g. VC-20261125-4832"/>
+      </div>
+      <div class="wfield">
+        <label>Product Category</label>
+        <select id="w-category">
+          <option value="">-- Select --</option>
+          <option>Smartphone / Tablet</option>
+          <option>Laptop / Computer</option>
+          <option>Audio (Earbuds / Headphones)</option>
+          <option>Smartwatch / Wearable</option>
+          <option>TV / Display</option>
+          <option>Gaming Console</option>
+          <option>Accessories / Charger</option>
+        </select>
+      </div>
+      <div class="wfield">
+        <label>Issue Type</label>
+        <select id="w-issue">
+          <option value="">-- Select --</option>
+          <option>Dead on Arrival (DOA)</option>
+          <option>Physical Damage</option>
+          <option>Software / Performance Issue</option>
+          <option>Missing Accessory in Box</option>
+          <option>Wrong Product Delivered</option>
+          <option>Battery Issue</option>
+        </select>
+      </div>
+      <div class="wfield">
+        <label>Days Since Delivery</label>
+        <input id="w-days" type="number" placeholder="e.g. 3"/>
+      </div>
+      <button class="calc-btn" onclick="checkWarranty()">🔍 Check Eligibility</button>
+      <div id="warranty-result"></div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: Unboxing Rules -->
+  <div class="cw-panel" id="panel-unbox">
+    <div class="unbox-panel">
+      <h3>📦 Unboxing & DOA Rules</h3>
+      <div class="unbox-warning">
+        ⚠️ <strong>MANDATORY:</strong> Record a continuous, unedited unboxing video starting BEFORE the outer box is opened. Claims without this video will be rejected.
+      </div>
+      <ul class="unbox-steps">
+        <li><span class="step-num">1</span>Start recording BEFORE opening the outer shipping box. Show the label clearly.</li>
+        <li><span class="step-num">2</span>Record unboxing completely in one shot — do NOT pause or edit the video.</li>
+        <li><span class="step-num">3</span>Show all items and accessories inside the box on camera.</li>
+        <li><span class="step-num">4</span>Demonstrate the defect or damage clearly on video.</li>
+        <li><span class="step-num">5</span>Report the issue within <strong>48 hours</strong> of delivery at <strong>support@voltcart.in</strong></li>
+        <li><span class="step-num">6</span>Include: Order ID, your name, unboxing video, and 3 clear photos of the issue.</li>
+        <li><span class="step-num">7</span>Our team verifies in <strong>24–48 hours</strong>. Free replacement dispatched on approval.</li>
+      </ul>
+      <div style="background:#111f38;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:.8rem;color:var(--muted)">
+        <strong style="color:var(--text)">❌ Claims rejected if:</strong><br/>
+        • No unboxing video provided<br/>
+        • Video is edited, partial, or paused<br/>
+        • Reported after 48 hours of delivery<br/>
+        • Damage caused by user (drops, water, etc.)
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══ CHAT ENGINE ══
+
+const INTENTS = [
+  {
+    chips:["📦 Track my order","🗺️ Where is my order?"],
+    keys:["track","where","order","locate","tracking","parcel","shipment","shipped","dispatch"],
+    answer:`📦 <strong>Order Tracking — VoltCart</strong><br/><br/>
+Once your order is dispatched, you'll receive:<br/>
+• 📱 SMS with tracking link<br/>
+• 📧 Email confirmation from <em>orders@voltcart.in</em><br/>
+• 💬 WhatsApp update (if opted in)<br/><br/>
+<strong>Delivery Timeline:</strong><br/>
+• Delhi/NCR: <em>1–2 business days</em><br/>
+• Metro Cities: <em>2–4 business days</em><br/>
+• Rest of India: <em>4–7 business days</em><br/><br/>
+You can also visit <strong>My Orders</strong> on the site. DM us your Order ID for live status! 🚀`
+  },
+  {
+    chips:["🔄 Return policy","↩️ How to return?"],
+    keys:["return","refund","money back","send back","replace","exchange","policy"],
+    answer:`🔄 <strong>Return & Refund Policy — VoltCart</strong><br/><br/>
+✅ <strong>7-Day Easy Returns</strong> on all products.<br/><br/>
+<strong>Eligibility:</strong><br/>
+• Product must be unused & in original packaging<br/>
+• All accessories and documents must be included<br/>
+• Return request within 7 days of delivery<br/><br/>
+<strong>Non-Returnable:</strong><br/>
+• Activated SIM cards / software<br/>
+• Items with physical damage caused by user<br/>
+• Sealed items once opened (hygiene products)<br/><br/>
+<strong>Refund Timeline:</strong> 5–7 business days after pickup.<br/>
+📧 Email: <em>returns@voltcart.in</em>`
+  },
+  {
+    chips:["🛡️ Warranty info","📋 Claim warranty"],
+    keys:["warranty","guarantee","claim","repair","service","defect","broken","fault"],
+    answer:`🛡️ <strong>Warranty Policy — VoltCart</strong><br/><br/>
+All products come with <strong>1-Year Brand Warranty</strong> + <strong>VoltCart Care</strong>.<br/><br/>
+<strong>What's Covered:</strong><br/>
+• Manufacturing defects<br/>
+• Hardware failure (non-physical damage)<br/>
+• Battery defects (capacity < 80% in 6 months)<br/><br/>
+<strong>Claim Process:</strong><br/>
+1. Email <em>support@voltcart.in</em> with Order ID<br/>
+2. Attach photos/video of the issue<br/>
+3. Our team responds in <em>24 hours</em><br/>
+4. Free pickup → repair → return within <em>7–10 days</em><br/><br/>
+Use our <strong>Warranty Check tab</strong> (🛡️ above) for instant eligibility!`
+  },
+  {
+    chips:["📱 Damaged item received","💔 Product broken"],
+    keys:["damage","damaged","broken","crack","cracked","shattered","doa","dead on arrival","leaking","defective","not working","doesnt work","doesn't work"],
+    answer:`😟 <strong>Damaged / Defective Product Protocol</strong><br/><br/>
+We're sorry to hear this! Please follow these steps:<br/><br/>
+<strong>⚠️ Report within 48 hours of delivery</strong><br/><br/>
+<strong>What you need to send:</strong><br/>
+• 🎥 Continuous unboxing video (see Unboxing Rules tab)<br/>
+• 📸 3 clear photos of the damage<br/>
+• 📋 Order ID and your contact number<br/><br/>
+<strong>Send to:</strong> <em>support@voltcart.in</em><br/><br/>
+Once verified, <strong>free replacement dispatched within 48 hours</strong>! ✅`
+  },
+  {
+    chips:["📦 Missing item in box","❓ Accessory not in box"],
+    keys:["missing","not in box","accessory","charger missing","earphone","cable","incomplete"],
+    answer:`📦 <strong>Missing Item / Incomplete Box</strong><br/><br/>
+If an accessory or item is missing from your order:<br/><br/>
+1. 🎥 Your <strong>unboxing video</strong> is mandatory proof<br/>
+2. Report within <strong>48 hours</strong> of delivery<br/>
+3. Email: <em>support@voltcart.in</em><br/>
+   Subject: "Missing Item — [Order ID]"<br/>
+4. Include video + photos showing empty box<br/><br/>
+Missing item will be shipped <strong>free of charge</strong> within 2 business days. ✅`
+  },
+  {
+    chips:["🔀 Wrong product delivered","😮 Got wrong item"],
+    keys:["wrong","wrong product","wrong item","different","not what i ordered","wrong model","wrong color","wrong variant"],
+    answer:`🔀 <strong>Wrong Product Delivered</strong><br/><br/>
+We sincerely apologize! Here's what to do:<br/><br/>
+1. <strong>DO NOT use or open</strong> the wrong product<br/>
+2. Take photos of the product received + label<br/>
+3. Email <em>support@voltcart.in</em> within <strong>48 hours</strong><br/>
+   Subject: "Wrong Product — [Order ID]"<br/><br/>
+<strong>Resolution:</strong><br/>
+• Free pickup of wrong item<br/>
+• Correct product dispatched within <em>24 hours</em> of pickup<br/>
+• Full refund if correct item unavailable ✅`
+  },
+  {
+    chips:["❌ Cancel my order","🚫 Stop my order"],
+    keys:["cancel","cancell","stop order","don't want","dont want","cancel order"],
+    answer:`❌ <strong>Order Cancellation Policy</strong><br/><br/>
+<strong>Before Dispatch:</strong> Cancel anytime — full refund in 24 hours ✅<br/><br/>
+<strong>After Dispatch:</strong> Cannot cancel — please use our <em>Return Policy</em> after delivery.<br/><br/>
+<strong>How to Cancel:</strong><br/>
+1. Go to <strong>My Orders</strong> → Click "Cancel Order"<br/>
+2. OR email <em>support@voltcart.in</em> immediately<br/>
+3. Include Order ID and reason<br/><br/>
+⚡ <em>Orders dispatch very fast — act quickly!</em>`
+  },
+  {
+    chips:["💳 Payment failed but money deducted","💸 Money gone, no order"],
+    keys:["payment","paid","money deducted","charged","transaction","bank","upi","failed payment","payment done"],
+    answer:`💳 <strong>Payment Deducted but No Order?</strong><br/><br/>
+Don't worry — this is a common bank delay!<br/><br/>
+<strong>What happens:</strong> Your bank holds the amount for 24–48 hours. If the order failed, the amount is <strong>automatically refunded</strong> to your original payment method.<br/><br/>
+<strong>Refund Timeline:</strong><br/>
+• UPI / Net Banking: <em>24 hours</em><br/>
+• Debit/Credit Card: <em>3–5 business days</em><br/><br/>
+<strong>Not refunded after 5 days?</strong><br/>
+Email <em>support@voltcart.in</em> with:<br/>
+• Transaction ID / UTR number<br/>
+• Screenshot of bank deduction ✅`
+  },
+  {
+    chips:["🚚 Delivery time","⏰ When will I get it?"],
+    keys:["deliver","delivery","when","how long","time","days","arrive","expected","eta"],
+    answer:`🚚 <strong>Delivery Timeline — VoltCart</strong><br/><br/>
+<strong>Dispatch:</strong> Same day for orders before 2 PM (Mon–Sat)<br/><br/>
+<strong>Estimated Delivery:</strong><br/>
+• 🏙️ Delhi/NCR: <em>1–2 business days</em><br/>
+• 🌆 Mumbai, Bangalore, Chennai, Hyderabad: <em>2–3 days</em><br/>
+• 🗺️ Other Metro Cities: <em>3–4 days</em><br/>
+• 🏘️ Rest of India: <em>4–7 business days</em><br/><br/>
+<strong>Courier Partners:</strong> BlueDart, Delhivery, Ekart, XpressBees<br/><br/>
+You'll get a tracking SMS as soon as your order ships! 📱`
+  },
+  {
+    chips:["💲 Shipping charges","🛒 Free delivery?"],
+    keys:["shipping charge","shipping cost","delivery charge","free shipping","delivery fee","shipping fee"],
+    answer:`💲 <strong>Shipping Charges — VoltCart</strong><br/><br/>
+<strong>FREE Shipping</strong> on orders above ₹499 ✅<br/><br/>
+<strong>Standard Charges (below ₹499):</strong><br/>
+• Within Delhi/NCR: <em>₹49</em><br/>
+• Within same state: <em>₹79</em><br/>
+• Other states: <em>₹99</em><br/>
+• Remote/hill areas: <em>₹149</em><br/><br/>
+<strong>Express Delivery</strong> (Delhi NCR only): +₹99 extra<br/><br/>
+💡 <em>Tip: Add items worth ₹499+ to get FREE shipping!</em>`
+  },
+  {
+    chips:["💰 EMI options","🏦 No-cost EMI"],
+    keys:["emi","loan","finance","equated monthly","instalment","installment","no cost","0%"],
+    answer:`💰 <strong>EMI & Financing Options — VoltCart</strong><br/><br/>
+<strong>No-Cost EMI available on orders above ₹5,000!</strong><br/><br/>
+<strong>Supported Banks:</strong><br/>
+• HDFC, ICICI, SBI, Axis, Kotak, Citibank<br/>
+• All major credit cards<br/><br/>
+<strong>EMI Tenures:</strong> 3 / 6 / 9 / 12 / 18 / 24 months<br/><br/>
+<strong>How to avail:</strong><br/>
+1. Add product to cart<br/>
+2. Select "EMI" as payment method at checkout<br/>
+3. Choose your bank and tenure<br/>
+4. OTP verification → Done! ✅<br/><br/>
+<em>Processing fee may apply for select tenures.</em>`
+  },
+  {
+    chips:["📮 Order delayed","🕐 Order not arrived"],
+    keys:["delayed","late","not arrived","not delivered","overdue","haven't received","haven't got","still waiting","long time"],
+    answer:`📮 <strong>Order Delayed — What to Do</strong><br/><br/>
+We apologize for the inconvenience!<br/><br/>
+<strong>Steps to resolve:</strong><br/>
+1. Check tracking via link in your SMS/Email<br/>
+2. Wait 1 extra business day (courier delays happen)<br/>
+3. If no update for <strong>2+ days beyond ETA</strong>, contact us:<br/>
+   📧 <em>support@voltcart.in</em><br/>
+   📞 <em>+91-9811-VOLT-99</em><br/><br/>
+<strong>Include:</strong> Order ID, delivery address, tracking number<br/><br/>
+We'll escalate with the courier and resolve in <strong>24 hours</strong>! ✅`
+  },
+  {
+    chips:["📦 Sealed box opened","🔒 Package tampered"],
+    keys:["tamper","sealed","open box","opened","seal broken","package open","unsealed"],
+    answer:`🔒 <strong>Tampered / Seal Broken Package</strong><br/><br/>
+<strong>DO NOT accept</strong> the delivery if the outer box is visibly tampered!<br/><br/>
+<strong>If already accepted:</strong><br/>
+• 🎥 Show it on your unboxing video immediately<br/>
+• 📸 Take photos of the tampered seal<br/>
+• Report within <strong>24 hours</strong> to <em>support@voltcart.in</em><br/><br/>
+<strong>What we do:</strong><br/>
+• Full investigation with courier partner<br/>
+• Free replacement dispatched within 48 hours<br/>
+• Courier partner held accountable ✅`
+  },
+  {
+    chips:["🎁 Gifting / Gift wrap","🎀 Send as gift"],
+    keys:["gift","gifting","gift wrap","present","birthday","anniversary","surprise","gift message"],
+    answer:`🎁 <strong>Gift Options — VoltCart</strong><br/><br/>
+Yes! We offer gift services! 🎉<br/><br/>
+<strong>Available:</strong><br/>
+• 🎀 Premium gift wrapping (+₹99)<br/>
+• 💌 Personalized gift message card (Free)<br/>
+• 🏷️ Price hidden from invoice (gift mode)<br/><br/>
+<strong>How to add:</strong><br/>
+1. Add product to cart<br/>
+2. Check "This is a Gift" at checkout<br/>
+3. Add your message and select wrap style<br/><br/>
+<em>Delivery in special branded VoltCart gift box!</em> ✅`
+  },
+  {
+    chips:["📞 Contact support","🆘 Need human help"],
+    keys:["contact","human","agent","call","phone","support","helpdesk","help","chat","whatsapp","number"],
+    answer:`📞 <strong>Contact VoltCart Support</strong><br/><br/>
+We're here to help! 🙂<br/><br/>
+<strong>📧 Email:</strong> support@voltcart.in<br/>
+<em>(Response within 2–4 hours)</em><br/><br/>
+<strong>📞 Phone:</strong> +91-9811-VOLT-99<br/>
+<em>Mon–Sat: 9 AM – 8 PM</em><br/><br/>
+<strong>💬 WhatsApp:</strong> +91-9811-VOLT-99<br/>
+<em>(Quick replies, 10 AM – 7 PM)</em><br/><br/>
+<strong>📍 Store:</strong> Lajpat Nagar, New Delhi - 110024<br/><br/>
+You can also use our quick-reply chips above for instant answers! ⚡`
+  }
+];
+
+const FALLBACK = `✨ <strong>VoltBot — VoltCart Support AI</strong><br/><br/>
+I can help you with:<br/>
+1. 📦 Order tracking & delivery timelines<br/>
+2. 🔄 Returns, refunds & exchange requests<br/>
+3. 🛡️ Warranty claims & damaged products<br/>
+4. 💳 Payment issues & EMI options<br/>
+5. 🚚 Shipping charges & courier info<br/><br/>
+Please choose one of the quick questions below, or rephrase your query! 👇`;
+
+// Build quick chips
+const chipsWrap = document.getElementById('chips-wrap');
+INTENTS.forEach((intent, idx) => {
+  intent.chips.forEach(label => {
+    const btn = document.createElement('button');
+    btn.className = 'chip-q';
+    btn.textContent = label;
+    btn.onclick = () => {
+      appendUserMsg(label);
+      appendBotMsg(intent.answer);
+    };
+    chipsWrap.appendChild(btn);
+  });
+});
+
+function now() {
+  return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+
+function appendUserMsg(text) {
+  const msgs = document.getElementById('chat-msgs');
+  msgs.innerHTML += `<div class="msg-user">${text}<div class="msg-time" style="text-align:right;color:rgba(255,255,255,.6)">${now()}</div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendBotMsg(html) {
+  const msgs = document.getElementById('chat-msgs');
+  msgs.innerHTML += `
+    <div class="bot-row">
+      <div class="bot-av">🤖</div>
+      <div>
+        <div class="msg-bot">${html}<div class="msg-time">${now()}</div></div>
+      </div>
+    </div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function matchIntent(query) {
+  const q = query.toLowerCase().replace(/[^a-z0-9 ]/g,'');
+  for (const intent of INTENTS) {
+    if (intent.keys.some(k => q.includes(k))) return intent.answer;
+  }
+  return FALLBACK;
+}
+
+function sendMsg() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  appendUserMsg(text);
+  setTimeout(() => appendBotMsg(matchIntent(text)), 500);
+}
+
+// Welcome message
+setTimeout(() => {
+  appendBotMsg(`👋 <strong>Welcome to VoltCart Support!</strong><br/><br/>
+I'm <strong>VoltBot</strong>, your AI shopping assistant. I can help with orders, returns, warranty, delivery, payments & more!<br/><br/>
+⚡ Choose a quick question below or type your query! Available 24/7.`);
+}, 400);
+
+// Toggle widget
+function toggleChat() {
+  document.getElementById('chat-widget').classList.toggle('hidden');
+}
+
+// Switch tabs
+function switchTab(name, el) {
+  document.querySelectorAll('.cw-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.cw-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// Warranty checker
+function checkWarranty() {
+  const oid = document.getElementById('w-orderid').value.trim();
+  const cat = document.getElementById('w-category').value;
+  const issue = document.getElementById('w-issue').value;
+  const days = parseInt(document.getElementById('w-days').value) || 0;
+  const res = document.getElementById('warranty-result');
+
+  if (!oid || !cat || !issue || !days) {
+    res.style.border='1px solid var(--red)';
+    res.innerHTML='⚠️ Please fill all fields to check eligibility.';
+    res.classList.add('show'); return;
+  }
+
+  let html = '';
+  if (issue === 'Dead on Arrival (DOA)' && days <= 2) {
+    html = `✅ <strong style="color:var(--green)">ELIGIBLE — Priority DOA Replacement</strong><br/>Your product qualifies for <strong>free priority replacement</strong> within 48 hours. Email support@voltcart.in with unboxing video.`;
+  } else if (issue === 'Physical Damage') {
+    html = `❌ <strong style="color:var(--red)">NOT COVERED — Physical Damage</strong><br/>Accidental/physical damage is not covered under standard warranty. You may avail paid repair service. Contact support@voltcart.in.`;
+  } else if (days <= 7 && (issue === 'Missing Accessory in Box' || issue === 'Wrong Product Delivered')) {
+    html = `✅ <strong style="color:var(--green)">ELIGIBLE — Free Resolution</strong><br/>You qualify for free replacement/correction. Email support@voltcart.in with Order ID, unboxing video and photos.`;
+  } else if (days <= 365) {
+    html = `✅ <strong style="color:var(--green)">ELIGIBLE — Warranty Claim</strong><br/>Your product is within the 1-Year Warranty period. Email support@voltcart.in for free repair/replacement.`;
+  } else {
+    html = `❌ <strong style="color:var(--red)">OUT OF WARRANTY</strong><br/>Your product is beyond the 1-Year Warranty period. Paid repair options are available. Email support@voltcart.in.`;
+  }
+
+  res.style.border='1px solid var(--border)';
+  res.innerHTML = html;
+  res.classList.add('show');
+}
+</script>
+</body>
+</html>
